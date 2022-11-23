@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import time
 from mojo.events import addObserver
 
@@ -12,10 +13,22 @@ class autoSaviour(object):
 
 	def saveFonts (self):
 		for font in AllFonts():
-			fileName = font.path.replace('.ufo', '-AutoSaved.ufo')
+			ROOT_PATH = '/'.join(font.path.split('/')[:-1]) + '/'
+			AUTOSAVE_PATH = '_autosave/'
+			newDir = ROOT_PATH + AUTOSAVE_PATH
+
+			if not os.path.exists(newDir):
+				os.mkdir(newDir)
+				print(f'{AUTOSAVE_PATH} is now a directory')
+			else:
+				print(f'{AUTOSAVE_PATH} is already a directory')
+			
+			fontName = font.path.split('/')[-1].split('.')[0]
+			newName = font.path.replace(fontName, AUTOSAVE_PATH + fontName + '-autosaved')
 			copyfont = font.copy()
 			print('Autosaving font...', font)
-			copyfont.save(fileName)
+			copyfont.save(newName)
+			print(newName)
 
 	def _checkTime (self, info):
 		curtime = time.time()
